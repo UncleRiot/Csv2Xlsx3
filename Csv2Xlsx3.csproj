@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<UseWindowsForms>true</UseWindowsForms>
+		<SupportedOSPlatformVersion>6.1</SupportedOSPlatformVersion>
+		<Nullable>disable</Nullable>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<RootNamespace>Csv2Xlsx3</RootNamespace>
+		<AssemblyName>Csv2Xlsx3</AssemblyName>
+		<ApplicationIcon>Ressources\CSVtoXLSXnew.ico</ApplicationIcon>
+		<Version>1.0</Version>
+		<FileVersion>1.0</FileVersion>
+		<AssemblyVersion>1.0</AssemblyVersion>
+		<Product>Csv2Xlsx3</Product>
+		<Company>Daniel Capilla</Company>
+		<Authors>Daniel Capilla</Authors>
+		<Copyright>© Daniel Capilla</Copyright>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="ClosedXML" Version="0.105.0" />
+		<PackageReference Include="CsvHelper" Version="33.1.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="Ressources\CSVtoXLSX.png" />
+		<EmbeddedResource Include="Ressources\molotov.png" />		
+		<EmbeddedResource Include="Ressources\ko-fi.png" />
+	</ItemGroup>
+
+</Project>
