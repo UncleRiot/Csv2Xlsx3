@@ -128,13 +128,12 @@ namespace Csv2Xlsx3
         {
             _args = args;
 
-            DateTime expiry = new DateTime(2026, 12, 31);
+            DateTime expiry = new DateTime(2027, 05, 31);
             if (DateTime.Now.Date > expiry)
             {
-                MessageBox.Show(
+                ModernTheme.ShowMessage(
                     "Die Testversion dieser Anwendung ist abgelaufen.\n\nBitte wenden Sie sich an den Autor.",
                     "Testzeitraum abgelaufen",
-                    MessageBoxButtons.OK,
                     MessageBoxIcon.Stop);
                 Environment.Exit(0);
                 return;
@@ -287,11 +286,6 @@ namespace Csv2Xlsx3
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-
-            if (WindowState == FormWindowState.Normal)
-            {
-                ModernTheme.DrawMainWindowResizeGrip(e.Graphics, ClientSize);
-            }
         }
         private void einstellungenToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -354,6 +348,7 @@ namespace Csv2Xlsx3
                 using (var colForm = new ColumnSelectionForm(columnNames, dt))
                 {
                     colForm.StartPosition = FormStartPosition.CenterParent;
+                    colForm.TopMost = TopMost;
 
                     if (colForm.ShowDialog(this) != DialogResult.OK || colForm.SelectedColumns.Count == 0)
                         return;
@@ -374,11 +369,10 @@ namespace Csv2Xlsx3
                                 wb.SaveAs(saveDlg.FileName);
                             }
 
-                            MessageBox.Show(
+                            ModernTheme.ShowMessage(
                                 this,
                                 "Erfolgreich gespeichert!",
                                 "Fertig",
-                                MessageBoxButtons.OK,
                                 MessageBoxIcon.Information);
                         }
                     }
@@ -386,11 +380,10 @@ namespace Csv2Xlsx3
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
+                ModernTheme.ShowMessage(
                     this,
                     "Fehler: " + ex.Message,
                     "Fehler",
-                    MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
         }
@@ -455,11 +448,10 @@ namespace Csv2Xlsx3
 
                             if (selectedCols.Length == 0)
                             {
-                                MessageBox.Show(
+                                ModernTheme.ShowMessage(
                                     this,
                                     "Keine gültigen Spalten zur Auswahl!",
                                     "Fehler",
-                                    MessageBoxButtons.OK,
                                     MessageBoxIcon.Error);
                                 continue;
                             }
@@ -481,11 +473,10 @@ namespace Csv2Xlsx3
 
                 if (!batchAborted)
                 {
-                    MessageBox.Show(
+                    ModernTheme.ShowMessage(
                         this,
                         "Alle Dateien wurden verarbeitet.",
                         "Batchjob beendet",
-                        MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
                 }
             }
@@ -753,23 +744,23 @@ namespace Csv2Xlsx3
             using (var buttonCancel = new Button())
             {
                 form.Text = "CSV-Trennzeichen";
-                form.FormBorderStyle = FormBorderStyle.FixedDialog;
                 form.StartPosition = FormStartPosition.CenterParent;
                 form.MinimizeBox = false;
                 form.MaximizeBox = false;
                 form.ShowInTaskbar = false;
-                form.ClientSize = new System.Drawing.Size(360, 135);
+                form.ClientSize = new Size(390, 185);
 
                 label.AutoSize = false;
-                label.Left = 12;
-                label.Top = 12;
-                label.Width = 336;
-                label.Height = 38;
+                label.Left = 20;
+                label.Top = 20;
+                label.Width = 350;
+                label.Height = 52;
                 label.Text = "Das Trennzeichen konnte nicht eindeutig erkannt werden. Bitte wählen Sie das verwendete CSV-Trennzeichen.";
+                label.TextAlign = ContentAlignment.MiddleLeft;
 
-                comboBox.Left = 12;
-                comboBox.Top = 58;
-                comboBox.Width = 336;
+                comboBox.Left = 20;
+                comboBox.Top = 82;
+                comboBox.Width = 350;
                 comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
                 comboBox.DisplayMember = "Value";
                 comboBox.ValueMember = "Key";
@@ -792,15 +783,17 @@ namespace Csv2Xlsx3
                     comboBox.SelectedIndex = 0;
 
                 buttonOk.Text = "OK";
-                buttonOk.Left = 192;
-                buttonOk.Top = 98;
+                buttonOk.Left = 195;
+                buttonOk.Top = 122;
                 buttonOk.Width = 75;
+                buttonOk.Height = 30;
                 buttonOk.DialogResult = DialogResult.OK;
 
                 buttonCancel.Text = "Abbrechen";
-                buttonCancel.Left = 273;
-                buttonCancel.Top = 98;
-                buttonCancel.Width = 75;
+                buttonCancel.Left = 280;
+                buttonCancel.Top = 122;
+                buttonCancel.Width = 90;
+                buttonCancel.Height = 30;
                 buttonCancel.DialogResult = DialogResult.Cancel;
 
                 form.Controls.Add(label);
@@ -809,6 +802,12 @@ namespace Csv2Xlsx3
                 form.Controls.Add(buttonCancel);
                 form.AcceptButton = buttonOk;
                 form.CancelButton = buttonCancel;
+
+                ModernTheme.ApplyLabelStyle(label);
+                ModernTheme.ApplyComboBoxStyle(comboBox);
+                ModernTheme.ApplyButtonStyle(buttonOk);
+                ModernTheme.ApplyButtonStyle(buttonCancel);
+                ModernFormStyler.Apply(form);
 
                 if (form.ShowDialog(this) == DialogResult.OK)
                     selectedDelimiter = ((KeyValuePair<string, string>)comboBox.SelectedItem).Key;
@@ -827,6 +826,7 @@ namespace Csv2Xlsx3
                 using (var colForm = new ColumnSelectionForm(columnNames, dt))
                 {
                     colForm.StartPosition = FormStartPosition.CenterParent;
+                    colForm.TopMost = TopMost;
 
                     if (colForm.ShowDialog(this) != DialogResult.OK || colForm.SelectedColumns.Count == 0)
                         return;
@@ -840,21 +840,19 @@ namespace Csv2Xlsx3
                         wb.SaveAs(xlsxPath);
                     }
 
-                    MessageBox.Show(
+                    ModernTheme.ShowMessage(
                         this,
                         "Datei wurde erfolgreich konvertiert:\n" + xlsxPath,
                         "Fertig",
-                        MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
+                ModernTheme.ShowMessage(
                     this,
                     "Fehler beim Konvertieren:\n" + ex.Message,
                     "Fehler",
-                    MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
         }

@@ -208,10 +208,7 @@ namespace Csv2Xlsx3
                 }
             }
         }
-        public static int MainWindowResizeGripSize
-        {
-            get { return 22; }
-        }
+        public const int MainWindowResizeGripSize = 22;
         public static bool IsInMainWindowResizeGripArea(Size clientSize, Point clientPoint)
         {
             return clientPoint.X >= clientSize.Width - MainWindowResizeGripSize &&
@@ -228,6 +225,58 @@ namespace Csv2Xlsx3
                 graphics.DrawLine(pen, right - 9, bottom, right, bottom - 9);
                 graphics.DrawLine(pen, right - 4, bottom, right, bottom - 4);
             }
+        }
+        public static DialogResult ShowMessage(string text, string caption, MessageBoxIcon icon)
+        {
+            return ShowMessage(null, text, caption, icon);
+        }
+        public static DialogResult ShowMessage(IWin32Window owner, string text, string caption, MessageBoxIcon icon)
+        {
+            using (Form dialog = new Form())
+            {
+                dialog.Text = caption;
+                dialog.StartPosition = owner == null ? FormStartPosition.CenterScreen : FormStartPosition.CenterParent;
+                dialog.ClientSize = new Size(420, 170);
+                dialog.MinimumSize = dialog.Size;
+                dialog.MaximumSize = dialog.Size;
+                dialog.MaximizeBox = false;
+                dialog.MinimizeBox = false;
+                dialog.ShowInTaskbar = false;
+
+                Label labelMessage = new Label
+                {
+                    AutoSize = false,
+                    Location = new Point(24, 24),
+                    Size = new Size(372, 70),
+                    Text = text,
+                    TextAlign = ContentAlignment.MiddleLeft
+                };
+
+                Button buttonOk = new Button
+                {
+                    Text = "OK",
+                    Size = new Size(75, 30),
+                    Location = new Point(321, 116),
+                    DialogResult = DialogResult.OK
+                };
+
+                dialog.Controls.Add(labelMessage);
+                dialog.Controls.Add(buttonOk);
+                dialog.AcceptButton = buttonOk;
+
+                ApplyLabelStyle(labelMessage);
+                ApplyButtonStyle(buttonOk);
+                ModernFormStyler.Apply(dialog);
+
+                return owner == null ? dialog.ShowDialog() : dialog.ShowDialog(owner);
+            }
+        }
+        public static void ApplyComboBoxStyle(ComboBox comboBox)
+        {
+            comboBox.BackColor = ControlBackColor;
+            comboBox.ForeColor = TextColor;
+            comboBox.Font = DefaultFont;
+            comboBox.FlatStyle = FlatStyle.Flat;
         }
         private sealed class ModernColorTable : ProfessionalColorTable
         {
