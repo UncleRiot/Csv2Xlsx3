@@ -37,20 +37,47 @@ namespace Csv2Xlsx3
 
         public static void ProcessCsvFileSilent(string csvFilePath)
         {
-            try
-            {
-                var dt = new MainForm().LoadCsvIntoDataTable(csvFilePath, false);
-                string xlsxPath = Path.ChangeExtension(csvFilePath, ".xlsx");
+            var dt = LoadCsvIntoDataTableSilent(csvFilePath);
+            string xlsxPath = Path.ChangeExtension(csvFilePath, ".xlsx");
 
-                using (var wb = new XLWorkbook())
-                {
-                    wb.Worksheets.Add(dt, "Daten");
-                    wb.SaveAs(xlsxPath);
-                }
-            }
-            catch
+            using (var wb = new XLWorkbook())
             {
+                wb.Worksheets.Add(dt, "Daten");
+                wb.SaveAs(xlsxPath);
             }
+        }
+        private static string DetectCsvDelimiterSilent(string path)
+        {
+            var configuredDelimiter = GetConfiguredCsvDelimiter();
+
+            if (TryDetectCsvDelimiter(path, configuredDelimiter, out var detectedDelimiter))
+                return detectedDelimiter;
+
+            return configuredDelimiter;
+        }
+        private static CsvConfiguration CreateCsvConfigurationSilent(string path)
+        {
+            return new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                Delimiter = DetectCsvDelimiterSilent(path),
+                BadDataFound = null,
+                MissingFieldFound = null,
+                HeaderValidated = null,
+                IgnoreBlankLines = true
+            };
+        }
+        private static DataTable LoadCsvIntoDataTableSilent(string path)
+        {
+            var dt = new DataTable();
+
+            using (var reader = new StreamReader(path))
+            using (var csv = new CsvReader(reader, CreateCsvConfigurationSilent(path)))
+            using (var dr = new CsvDataReader(csv))
+            {
+                dt.Load(dr);
+            }
+
+            return dt;
         }
         private void CreateMainWindowResizeGrip()
         {
@@ -101,7 +128,7 @@ namespace Csv2Xlsx3
         {
             _args = args;
 
-            DateTime expiry = new DateTime(2027, 05, 05);
+            DateTime expiry = new DateTime(2026, 12, 31);
             if (DateTime.Now.Date > expiry)
             {
                 MessageBox.Show(
@@ -145,49 +172,28 @@ namespace Csv2Xlsx3
             if (WindowState != FormWindowState.Normal)
                 return;
 
-            string configFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CSVtoXLSX.cfg");
-            var settings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
-            if (File.Exists(configFile))
-            {
-                foreach (var line in File.ReadAllLines(configFile))
-                {
-                    var parts = line.Split(new[] { '=' }, 2);
-                    if (parts.Length != 2)
-                        continue;
-
-                    settings[parts[0].Trim()] = parts[1].Trim();
-                }
-            }
+            var settings = LoadCsvConfiguration();
 
             settings["MainWindowWidth"] = Math.Max(Width, ModernTheme.MainWindowMinimumSize.Width).ToString(CultureInfo.InvariantCulture);
             settings["MainWindowHeight"] = Math.Max(Height, ModernTheme.MainWindowMinimumSize.Height).ToString(CultureInfo.InvariantCulture);
 
-            File.WriteAllLines(
-                configFile,
-                settings.Select(setting => setting.Key + "=" + setting.Value));
+            SaveCsvConfiguration(settings);
         }
         private void LoadMainWindowSize()
         {
-            string configFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CSVtoXLSX.cfg");
-
-            if (!File.Exists(configFile))
-                return;
+            var settings = LoadCsvConfiguration();
 
             int width = Width;
             int height = Height;
 
-            foreach (var line in File.ReadAllLines(configFile))
+            if (settings.TryGetValue("MainWindowWidth", out var widthValue))
             {
-                var parts = line.Split(new[] { '=' }, 2);
-                if (parts.Length != 2)
-                    continue;
+                int.TryParse(widthValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out width);
+            }
 
-                if (parts[0].Trim() == "MainWindowWidth")
-                    int.TryParse(parts[1].Trim(), out width);
-
-                if (parts[0].Trim() == "MainWindowHeight")
-                    int.TryParse(parts[1].Trim(), out height);
+            if (settings.TryGetValue("MainWindowHeight", out var heightValue))
+            {
+                int.TryParse(heightValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out height);
             }
 
             width = Math.Max(width, ModernTheme.MainWindowMinimumSize.Width);
@@ -208,43 +214,22 @@ namespace Csv2Xlsx3
 
         private void ApplySettings()
         {
-            string configFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CSVtoXLSX.cfg");
-            bool alwaysOnTop = false;
+            var settings = LoadCsvConfiguration();
 
-            if (File.Exists(configFile))
-            {
-                foreach (var line in File.ReadAllLines(configFile))
-                {
-                    var parts = line.Split('=');
-                    if (parts.Length != 2)
-                        continue;
-
-                    if (parts[0].Trim() == "AlwaysOnTop" && parts[1].Trim().ToLower() == "true")
-                        alwaysOnTop = true;
-                }
-            }
-
-            TopMost = alwaysOnTop;
+            TopMost =
+                settings.TryGetValue("AlwaysOnTop", out var alwaysOnTopValue) &&
+                alwaysOnTopValue.Trim().Equals("true", StringComparison.OrdinalIgnoreCase);
         }
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
 
-            bool minimizeToTray = false;
-            string configFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CSVtoXLSX.cfg");
-            if (File.Exists(configFile))
-            {
-                foreach (var line in File.ReadAllLines(configFile))
-                {
-                    var parts = line.Split('=');
-                    if (parts.Length != 2)
-                        continue;
+            var settings = LoadCsvConfiguration();
 
-                    if (parts[0].Trim() == "Systray" && parts[1].Trim().ToLower() == "true")
-                        minimizeToTray = true;
-                }
-            }
+            bool minimizeToTray =
+                settings.TryGetValue("Systray", out var systrayValue) &&
+                systrayValue.Trim().Equals("true", StringComparison.OrdinalIgnoreCase);
 
             if (minimizeToTray && WindowState == FormWindowState.Minimized)
             {
@@ -591,7 +576,7 @@ namespace Csv2Xlsx3
             return configuredDelimiter;
         }
 
-        private bool TryDetectCsvDelimiter(string path, string configuredDelimiter, out string detectedDelimiter)
+        private static bool TryDetectCsvDelimiter(string path, string configuredDelimiter, out string detectedDelimiter)
         {
             detectedDelimiter = configuredDelimiter;
 
@@ -678,7 +663,7 @@ namespace Csv2Xlsx3
             return false;
         }
 
-        private int CountDelimiterOccurrences(string line, string delimiter)
+        private static int CountDelimiterOccurrences(string line, string delimiter)
         {
             if (string.IsNullOrEmpty(line) || string.IsNullOrEmpty(delimiter))
                 return 0;
@@ -712,7 +697,7 @@ namespace Csv2Xlsx3
             return count;
         }
 
-        private string GetConfiguredCsvDelimiter()
+        private static string GetConfiguredCsvDelimiter()
         {
             var settings = LoadCsvConfiguration();
 
@@ -729,8 +714,15 @@ namespace Csv2Xlsx3
 
             return ",";
         }
+        private static void SaveCsvConfiguration(Dictionary<string, string> settings)
+        {
+            string configFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CSVtoXLSX.cfg");
 
-        private Dictionary<string, string> LoadCsvConfiguration()
+            File.WriteAllLines(
+                configFile,
+                settings.Select(setting => setting.Key + "=" + setting.Value));
+        }
+        private static Dictionary<string, string> LoadCsvConfiguration()
         {
             var settings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             string configFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CSVtoXLSX.cfg");

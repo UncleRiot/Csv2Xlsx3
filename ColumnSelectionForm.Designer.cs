@@ -29,11 +29,13 @@ namespace Csv2Xlsx3
             // 
             // checkedListBoxColumns
             // 
+            this.checkedListBoxColumns.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.checkedListBoxColumns.CheckOnClick = true;
             this.checkedListBoxColumns.FormattingEnabled = true;
             this.checkedListBoxColumns.Location = new System.Drawing.Point(12, 12);
             this.checkedListBoxColumns.Name = "checkedListBoxColumns";
-            this.checkedListBoxColumns.Size = new System.Drawing.Size(240, 274);
+            this.checkedListBoxColumns.Size = new System.Drawing.Size(240, 294);
             this.checkedListBoxColumns.TabIndex = 0;
             // 
             // dataGridViewPreview
@@ -41,6 +43,9 @@ namespace Csv2Xlsx3
             this.dataGridViewPreview.AllowUserToAddRows = false;
             this.dataGridViewPreview.AllowUserToDeleteRows = false;
             this.dataGridViewPreview.AllowUserToResizeRows = false;
+            this.dataGridViewPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewPreview.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
             this.dataGridViewPreview.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewPreview.Location = new System.Drawing.Point(268, 12);
@@ -49,12 +54,13 @@ namespace Csv2Xlsx3
             this.dataGridViewPreview.ReadOnly = true;
             this.dataGridViewPreview.RowHeadersVisible = false;
             this.dataGridViewPreview.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridViewPreview.Size = new System.Drawing.Size(520, 274);
+            this.dataGridViewPreview.Size = new System.Drawing.Size(540, 294);
             this.dataGridViewPreview.TabIndex = 1;
             // 
             // buttonOk
             // 
-            this.buttonOk.Location = new System.Drawing.Point(632, 302);
+            this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonOk.Location = new System.Drawing.Point(633, 322);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 30);
             this.buttonOk.TabIndex = 2;
@@ -64,9 +70,10 @@ namespace Csv2Xlsx3
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Location = new System.Drawing.Point(713, 302);
+            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCancel.Location = new System.Drawing.Point(714, 322);
             this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(75, 30);
+            this.buttonCancel.Size = new System.Drawing.Size(90, 30);
             this.buttonCancel.TabIndex = 3;
             this.buttonCancel.Text = "Abbrechen";
             this.buttonCancel.UseVisualStyleBackColor = true;
@@ -76,7 +83,7 @@ namespace Csv2Xlsx3
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 344);
+            this.ClientSize = new System.Drawing.Size(825, 370);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOk);
             this.Controls.Add(this.dataGridViewPreview);
