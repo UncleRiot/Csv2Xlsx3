@@ -11,8 +11,10 @@
 		<AssemblyName>Csv2Xlsx3</AssemblyName>
 		<ApplicationIcon>Ressources\CSVtoXLSXnew.ico</ApplicationIcon>
 		<Version>1.0.1</Version>
-		<FileVersion>1.0.1</FileVersion>
-		<AssemblyVersion>1.0.1</AssemblyVersion>
+		<FileVersion>1.0.1.0</FileVersion>
+		<AssemblyVersion>1.0.1.0</AssemblyVersion>
+		<InformationalVersion>1.0.1</InformationalVersion>
+		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<Product>Csv2Xlsx3</Product>
 		<Company>Daniel Capilla</Company>
 		<Authors>Daniel Capilla</Authors>
@@ -26,7 +28,7 @@
 
 	<ItemGroup>
 		<EmbeddedResource Include="Ressources\CSVtoXLSX.png" />
-		<EmbeddedResource Include="Ressources\molotov.png" />		
+		<EmbeddedResource Include="Ressources\molotov.png" />
 		<EmbeddedResource Include="Ressources\ko-fi.png" />
 	</ItemGroup>
 
