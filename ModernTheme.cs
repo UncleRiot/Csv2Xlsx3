@@ -47,6 +47,8 @@ namespace Csv2Xlsx3
         public const int AboutInfoHeight = 42;
         public const int AboutKoFiTop = 222;
 
+        public const int MainWindowResizeGripSize = 22;
+
         public static readonly Size TitleBarButtonSize = new Size(46, 34);
         public static readonly Size AboutFormSize = new Size(500, 340);
         public static readonly Size AboutKoFiButtonSize = new Size(180, 42);
@@ -170,6 +172,14 @@ namespace Csv2Xlsx3
             label.Font = DefaultFont;
         }
 
+        public static void ApplyComboBoxStyle(ComboBox comboBox)
+        {
+            comboBox.BackColor = ControlBackColor;
+            comboBox.ForeColor = TextColor;
+            comboBox.Font = DefaultFont;
+            comboBox.FlatStyle = FlatStyle.Flat;
+        }
+
         public static void ApplyMenuStyle(MenuStrip menuStrip)
         {
             menuStrip.BackColor = TitleBarBackColor;
@@ -208,12 +218,13 @@ namespace Csv2Xlsx3
                 }
             }
         }
-        public const int MainWindowResizeGripSize = 22;
+
         public static bool IsInMainWindowResizeGripArea(Size clientSize, Point clientPoint)
         {
             return clientPoint.X >= clientSize.Width - MainWindowResizeGripSize &&
                    clientPoint.Y >= clientSize.Height - MainWindowResizeGripSize;
         }
+
         public static void DrawMainWindowResizeGrip(Graphics graphics, Size clientSize)
         {
             using (Pen pen = new Pen(AccentColor, 2F))
@@ -226,10 +237,12 @@ namespace Csv2Xlsx3
                 graphics.DrawLine(pen, right - 4, bottom, right, bottom - 4);
             }
         }
+
         public static DialogResult ShowMessage(string text, string caption, MessageBoxIcon icon)
         {
             return ShowMessage(null, text, caption, icon);
         }
+
         public static DialogResult ShowMessage(IWin32Window owner, string text, string caption, MessageBoxIcon icon)
         {
             using (Form dialog = new Form())
@@ -254,7 +267,7 @@ namespace Csv2Xlsx3
 
                 Button buttonOk = new Button
                 {
-                    Text = "OK",
+                    Text = LanguageManager.T("Button.OK"),
                     Size = new Size(75, 30),
                     Location = new Point(321, 116),
                     DialogResult = DialogResult.OK
@@ -271,13 +284,7 @@ namespace Csv2Xlsx3
                 return owner == null ? dialog.ShowDialog() : dialog.ShowDialog(owner);
             }
         }
-        public static void ApplyComboBoxStyle(ComboBox comboBox)
-        {
-            comboBox.BackColor = ControlBackColor;
-            comboBox.ForeColor = TextColor;
-            comboBox.Font = DefaultFont;
-            comboBox.FlatStyle = FlatStyle.Flat;
-        }
+
         private sealed class ModernColorTable : ProfessionalColorTable
         {
             public override Color MenuItemSelected => ControlHoverBackColor;

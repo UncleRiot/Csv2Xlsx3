@@ -1,8 +1,3 @@
-// Design-Rule / UI consistency:
-// Keep layout, spacing, colors, sizes, and fonts aligned with ModernTheme.
-// Add new shared visual values to ModernTheme instead of hardcoding local exceptions here.
-// 03.05.2026 /dc
-
 using System.Drawing;
 using System.Windows.Forms;
 

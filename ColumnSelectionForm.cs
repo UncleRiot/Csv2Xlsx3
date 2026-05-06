@@ -23,6 +23,8 @@ namespace Csv2Xlsx3
         {
             InitializeComponent();
 
+            ApplyLanguage();
+
             foreach (var column in columns)
             {
                 checkedListBoxColumns.Items.Add(column, true);
@@ -38,6 +40,13 @@ namespace Csv2Xlsx3
             MinimumSize = Size;
             LoadColumnSelectionWindowSize();
             CreateColumnSelectionResizeGrip();
+        }
+
+        private void ApplyLanguage()
+        {
+            Text = LanguageManager.T("ColumnSelection.Title");
+            buttonOk.Text = LanguageManager.T("Button.OK");
+            buttonCancel.Text = LanguageManager.T("Button.Cancel");
         }
 
         private void CreateColumnSelectionResizeGrip()

@@ -9,6 +9,7 @@ namespace Csv2Xlsx3
         static void Main(string[] args)
         {
             ApplicationConfiguration.Initialize();
+            LanguageManager.Initialize();
 
             if (args != null && args.Length > 0)
             {

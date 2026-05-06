@@ -21,6 +21,7 @@ namespace Csv2Xlsx3
         {
             InitializeComponent();
 
+            ApplyLanguage();
             ModernFormStyler.Apply(this);
             ReplaceKoFiButtonWithImageOnlyButton();
             ApplyAboutLayout();
@@ -28,9 +29,23 @@ namespace Csv2Xlsx3
             LoadEmbeddedApplicationImage("molotov.png");
             LoadEmbeddedKoFiImage("ko-fi.png");
 
-            labelVersion.Text = "Version: " + GetCurrentVersion();
+            labelVersion.Text = LanguageManager.T("About.Version", GetCurrentVersion());
             _ = CheckForUpdatesAsync();
         }
+
+        private void ApplyLanguage()
+        {
+            Text = LanguageManager.T("About.Title");
+            labelTitle.Text = LanguageManager.T("About.ProductName");
+            labelCopyright.Text = LanguageManager.T("About.Copyright");
+            labelVersion.Text = LanguageManager.T("About.Version", GetCurrentVersion());
+            labelUpdateStatus.Text = LanguageManager.T("About.NoUpdates");
+            labelInfo.Text = LanguageManager.T("About.Info");
+            linkLabelGithub.Text = GithubRepositoryUrl;
+            btnKoFi.Text = LanguageManager.T("About.KoFiText");
+            btnOk.Text = LanguageManager.T("Button.OK");
+        }
+
         private void ReplaceKoFiButtonWithImageOnlyButton()
         {
             Control parent = btnKoFi.Parent;
@@ -58,6 +73,7 @@ namespace Csv2Xlsx3
             parent.Controls.Add(btnKoFi);
             parent.Controls.SetChildIndex(btnKoFi, childIndex);
         }
+
         private sealed class ImageOnlyButton : Button
         {
             public ImageOnlyButton()
@@ -116,6 +132,7 @@ namespace Csv2Xlsx3
                 get { return false; }
             }
         }
+
         private void ApplyAboutLayout()
         {
             ClientSize = ModernTheme.AboutFormSize;
@@ -345,11 +362,7 @@ namespace Csv2Xlsx3
                     {
                         if (!document.RootElement.TryGetProperty("tag_name", out JsonElement tagNameElement))
                         {
-                            labelUpdateStatus.Text = "No new updates";
-                            labelUpdateStatus.ForeColor = ModernTheme.TextColor;
-                            labelUpdateStatus.Font = ModernTheme.DefaultFont;
-                            labelUpdateStatus.Cursor = Cursors.Default;
-                            labelUpdateStatus.Click -= labelUpdateStatus_Click;
+                            ShowNoUpdateStatus();
                             return;
                         }
 
@@ -358,47 +371,46 @@ namespace Csv2Xlsx3
                         if (!TryParseVersion(GetCurrentVersion(), out Version currentVersion) ||
                             !TryParseVersion(latestVersionText, out Version latestVersion))
                         {
-                            labelUpdateStatus.Text = "No new updates";
-                            labelUpdateStatus.ForeColor = ModernTheme.TextColor;
-                            labelUpdateStatus.Font = ModernTheme.DefaultFont;
-                            labelUpdateStatus.Cursor = Cursors.Default;
-                            labelUpdateStatus.Click -= labelUpdateStatus_Click;
+                            ShowNoUpdateStatus();
                             return;
                         }
 
                         if (latestVersion > currentVersion)
                         {
-                            labelUpdateStatus.Text = "Update available: " + latestVersionText;
+                            labelUpdateStatus.Text = LanguageManager.T("About.UpdateAvailable", latestVersionText);
                             labelUpdateStatus.ForeColor = ModernTheme.AccentColor;
-                            labelUpdateStatus.Font = new Font(labelUpdateStatus.Font, FontStyle.Underline);
+                            labelUpdateStatus.Font = new Font(ModernTheme.DefaultFont, FontStyle.Underline);
                             labelUpdateStatus.Cursor = Cursors.Hand;
                             labelUpdateStatus.Click -= labelUpdateStatus_Click;
                             labelUpdateStatus.Click += labelUpdateStatus_Click;
                         }
                         else
                         {
-                            labelUpdateStatus.Text = "No new updates";
-                            labelUpdateStatus.ForeColor = ModernTheme.TextColor;
-                            labelUpdateStatus.Font = ModernTheme.DefaultFont;
-                            labelUpdateStatus.Cursor = Cursors.Default;
-                            labelUpdateStatus.Click -= labelUpdateStatus_Click;
+                            ShowNoUpdateStatus();
                         }
                     }
                 }
             }
             catch
             {
-                labelUpdateStatus.Text = "No new updates";
-                labelUpdateStatus.ForeColor = ModernTheme.TextColor;
-                labelUpdateStatus.Font = ModernTheme.DefaultFont;
-                labelUpdateStatus.Cursor = Cursors.Default;
-                labelUpdateStatus.Click -= labelUpdateStatus_Click;
+                ShowNoUpdateStatus();
             }
         }
+
+        private void ShowNoUpdateStatus()
+        {
+            labelUpdateStatus.Text = LanguageManager.T("About.NoUpdates");
+            labelUpdateStatus.ForeColor = ModernTheme.TextColor;
+            labelUpdateStatus.Font = ModernTheme.DefaultFont;
+            labelUpdateStatus.Cursor = Cursors.Default;
+            labelUpdateStatus.Click -= labelUpdateStatus_Click;
+        }
+
         private void labelUpdateStatus_Click(object sender, EventArgs e)
         {
             OpenUrl(GithubRepositoryUrl + "/releases/latest");
         }
+
         private void OpenUrl(string url)
         {
             Process.Start(new ProcessStartInfo

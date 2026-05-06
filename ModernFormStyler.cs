@@ -188,6 +188,10 @@ namespace Csv2Xlsx3
             {
                 ModernTheme.ApplyTextBoxStyle(textBox);
             }
+            else if (control is ComboBox comboBox)
+            {
+                ModernTheme.ApplyComboBoxStyle(comboBox);
+            }
             else if (control is CheckBox checkBox)
             {
                 ModernTheme.ApplyCheckBoxStyle(checkBox);

@@ -61,29 +61,29 @@ namespace Csv2Xlsx3
             this.einstellungenToolStripMenuItem,
             this.programmBeendenToolStripMenuItem});
             this.dateiToolStripMenuItem.Name = "dateiToolStripMenuItem";
-            this.dateiToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
-            this.dateiToolStripMenuItem.Text = "Datei";
+            this.dateiToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.dateiToolStripMenuItem.Text = "File";
             // 
             // batchjobToolStripMenuItem
             // 
             this.batchjobToolStripMenuItem.Name = "batchjobToolStripMenuItem";
             this.batchjobToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.batchjobToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-            this.batchjobToolStripMenuItem.Text = "Batchjob";
+            this.batchjobToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.batchjobToolStripMenuItem.Text = "Batch job";
             this.batchjobToolStripMenuItem.Click += new System.EventHandler(this.batchjobToolStripMenuItem_Click);
             // 
             // einstellungenToolStripMenuItem
             // 
             this.einstellungenToolStripMenuItem.Name = "einstellungenToolStripMenuItem";
-            this.einstellungenToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-            this.einstellungenToolStripMenuItem.Text = "Einstellungen";
+            this.einstellungenToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.einstellungenToolStripMenuItem.Text = "Settings";
             this.einstellungenToolStripMenuItem.Click += new System.EventHandler(this.einstellungenToolStripMenuItem_Click);
             // 
             // programmBeendenToolStripMenuItem
             // 
             this.programmBeendenToolStripMenuItem.Name = "programmBeendenToolStripMenuItem";
-            this.programmBeendenToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-            this.programmBeendenToolStripMenuItem.Text = "Programm beenden";
+            this.programmBeendenToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.programmBeendenToolStripMenuItem.Text = "Exit";
             this.programmBeendenToolStripMenuItem.Click += new System.EventHandler(this.programmBeendenToolStripMenuItem_Click);
             // 
             // hilfeToolStripMenuItem
@@ -97,8 +97,8 @@ namespace Csv2Xlsx3
             // überToolStripMenuItem
             // 
             this.überToolStripMenuItem.Name = "überToolStripMenuItem";
-            this.überToolStripMenuItem.Size = new System.Drawing.Size(99, 22);
-            this.überToolStripMenuItem.Text = "Über";
+            this.überToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.überToolStripMenuItem.Text = "About";
             this.überToolStripMenuItem.Click += new System.EventHandler(this.überToolStripMenuItem_Click);
             // 
             // dropPanel
@@ -122,7 +122,7 @@ namespace Csv2Xlsx3
             this.infoLabel.Name = "infoLabel";
             this.infoLabel.Size = new System.Drawing.Size(398, 174);
             this.infoLabel.TabIndex = 0;
-            this.infoLabel.Text = "Hier .csv ablegen";
+            this.infoLabel.Text = "Drop .csv here";
             this.infoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // contextMenuStrip1
@@ -132,8 +132,8 @@ namespace Csv2Xlsx3
             // 
             // notifyIcon
             // 
-            this.notifyIcon.BalloonTipText = "CSVtoXLSX – läuft im Hintergrund";
-            this.notifyIcon.Text = "CSVtoXLSX";
+            this.notifyIcon.BalloonTipText = "CSV2XLSX is running in the background";
+            this.notifyIcon.Text = "CSV2XLSX";
             this.notifyIcon.Visible = true;
             this.notifyIcon.DoubleClick += new System.EventHandler(this.notifyIcon_DoubleClick);
             // 
@@ -146,7 +146,7 @@ namespace Csv2Xlsx3
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
-            this.Text = "CSV zu XLSX Konverter";
+            this.Text = "CSV2XLSX";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

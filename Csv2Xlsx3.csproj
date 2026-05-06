@@ -10,10 +10,10 @@
 		<RootNamespace>Csv2Xlsx3</RootNamespace>
 		<AssemblyName>Csv2Xlsx3</AssemblyName>
 		<ApplicationIcon>Ressources\CSVtoXLSXnew.ico</ApplicationIcon>
-		<Version>1.0.1</Version>
-		<FileVersion>1.0.1.0</FileVersion>
-		<AssemblyVersion>1.0.1.0</AssemblyVersion>
-		<InformationalVersion>1.0.1</InformationalVersion>
+		<Version>1.0.2</Version>
+		<FileVersion>1.0.2.0</FileVersion>
+		<AssemblyVersion>1.0.2.0</AssemblyVersion>
+		<InformationalVersion>1.0.2</InformationalVersion>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<Product>Csv2Xlsx3</Product>
 		<Company>Daniel Capilla</Company>

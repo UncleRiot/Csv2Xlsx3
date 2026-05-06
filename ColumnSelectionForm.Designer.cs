@@ -75,7 +75,7 @@ namespace Csv2Xlsx3
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(90, 30);
             this.buttonCancel.TabIndex = 3;
-            this.buttonCancel.Text = "Abbrechen";
+            this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
@@ -92,7 +92,7 @@ namespace Csv2Xlsx3
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ColumnSelectionForm";
-            this.Text = "Spalten auswählen";
+            this.Text = "Select columns";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewPreview)).EndInit();
             this.ResumeLayout(false);
         }

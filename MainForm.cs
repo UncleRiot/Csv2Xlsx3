@@ -1,21 +1,3 @@
-// ---------------------------------------------------------------------------
-// Datei:      MainForm.cs
-// Autor:      Daniel Capilla
-// Projekt:    CSVtoXLSX_v3
-// Version:    1.0.1 (Stand: 2026-05-06)
-// ---------------------------------------------------------------------------
-// Beschreibung:
-// Hauptfenster für die Auswahl und Konvertierung von CSV-Dateien zu XLSX.
-// Features:
-//   - Drag & Drop von CSV
-//   - Batchkonvertierung
-//   - Spaltenauswahl mit Vorschau
-//   - Minimierung ins Systray (Tray-Icon)
-//   - Shell-Kontextmenü (Rechtsklick auf .csv in Windows-Explorer)
-//   - Einstellungsdatei: CSVtoXLSX.cfg im Programmverzeichnis
-//   - Registry: Shell-Kontextmenü wird (de)aktiviert unter HKCU\Software\Classes\SystemFileAssociations\.csv\shell\CSVtoXLSX
-// ---------------------------------------------------------------------------
-
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -36,168 +18,79 @@ namespace Csv2Xlsx3
 
         public static void ProcessCsvFileSilent(string csvFilePath)
         {
-            var dt = LoadCsvIntoDataTableSilent(csvFilePath);
-            string xlsxPath = Path.ChangeExtension(csvFilePath, ".xlsx");
-
-            using (var wb = new XLWorkbook())
+            try
             {
-                wb.Worksheets.Add(dt, "Daten");
-                wb.SaveAs(xlsxPath);
+                var dt = LoadCsvIntoDataTableSilent(csvFilePath);
+                string xlsxPath = Path.ChangeExtension(csvFilePath, ".xlsx");
+
+                using (var wb = new XLWorkbook())
+                {
+                    wb.Worksheets.Add(dt, "Daten");
+                    wb.SaveAs(xlsxPath);
+                }
+            }
+            catch
+            {
             }
         }
-        private static string DetectCsvDelimiterSilent(string path)
-        {
-            var configuredDelimiter = GetConfiguredCsvDelimiter();
 
-            if (TryDetectCsvDelimiter(path, configuredDelimiter, out var detectedDelimiter))
-                return detectedDelimiter;
-
-            return configuredDelimiter;
-        }
-        private static CsvConfiguration CreateCsvConfigurationSilent(string path)
-        {
-            return new CsvConfiguration(CultureInfo.InvariantCulture)
-            {
-                Delimiter = DetectCsvDelimiterSilent(path),
-                BadDataFound = null,
-                MissingFieldFound = null,
-                HeaderValidated = null,
-                IgnoreBlankLines = true
-            };
-        }
-        private static DataTable LoadCsvIntoDataTableSilent(string path)
-        {
-            var dt = new DataTable();
-
-            using (var reader = new StreamReader(path))
-            using (var csv = new CsvReader(reader, CreateCsvConfigurationSilent(path)))
-            using (var dr = new CsvDataReader(csv))
-            {
-                dt.Load(dr);
-            }
-
-            return dt;
-        }
-        private void CreateMainWindowResizeGrip()
-        {
-            if (Controls.ContainsKey("panelMainWindowResizeGrip"))
-                return;
-
-            Panel panelMainWindowResizeGrip = new Panel
-            {
-                Name = "panelMainWindowResizeGrip",
-                Size = new Size(ModernTheme.MainWindowResizeGripSize, ModernTheme.MainWindowResizeGripSize),
-                Location = new Point(
-                    ClientSize.Width - ModernTheme.MainWindowResizeGripSize - ModernTheme.WindowBorderWidth,
-                    ClientSize.Height - ModernTheme.MainWindowResizeGripSize - ModernTheme.WindowBorderWidth),
-                Anchor = AnchorStyles.Right | AnchorStyles.Bottom,
-                Cursor = Cursors.SizeNWSE,
-                BackColor = ModernTheme.ControlBackColor
-            };
-
-            panelMainWindowResizeGrip.Paint += (sender, e) =>
-            {
-                ModernTheme.DrawMainWindowResizeGrip(e.Graphics, panelMainWindowResizeGrip.ClientSize);
-            };
-
-            panelMainWindowResizeGrip.MouseDown += (sender, e) =>
-            {
-                if (e.Button != MouseButtons.Left)
-                    return;
-
-                const int WM_NCLBUTTONDOWN = 0xA1;
-                const int HTBOTTOMRIGHT = 17;
-
-                ReleaseCapture();
-                SendMessage(Handle, WM_NCLBUTTONDOWN, HTBOTTOMRIGHT, 0);
-            };
-
-            Controls.Add(panelMainWindowResizeGrip);
-            panelMainWindowResizeGrip.BringToFront();
-        }
         public MainForm() : this(Array.Empty<string>())
         {
         }
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
-        private static extern bool ReleaseCapture();
 
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
-        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
         public MainForm(string[] args)
         {
             _args = args;
 
-            DateTime expiry = new DateTime(2027, 05, 31);
+            DateTime expiry = new DateTime(2026, 12, 31);
             if (DateTime.Now.Date > expiry)
             {
                 ModernTheme.ShowMessage(
-                    "Die Testversion dieser Anwendung ist abgelaufen.\n\nBitte wenden Sie sich an den Autor.",
-                    "Testzeitraum abgelaufen",
+                    "The trial version of this application has expired.\n\nPlease contact the author.",
+                    "Trial period expired",
                     MessageBoxIcon.Stop);
                 Environment.Exit(0);
                 return;
             }
 
             InitializeComponent();
-            Text = "CSV2XLSX";
-            MinimumSize = ModernTheme.MainWindowMinimumSize;
+            ApplyLanguage();
             StartPosition = FormStartPosition.CenterScreen;
-            LoadMainWindowSize();
             ApplyWindowIcon();
             ApplySettings();
             ModernFormStyler.Apply(this);
-            CreateMainWindowResizeGrip();
-
-            notifyIcon.Text = "CSV2XLSX";
 
             if (_args != null && _args.Length > 0 && File.Exists(_args[0]))
             {
                 HandleCsvFile(_args[0]);
             }
         }
-        protected override void OnResizeEnd(EventArgs e)
+
+        private void ApplyLanguage()
         {
-            base.OnResizeEnd(e);
-            SaveMainWindowSize();
+            Text = LanguageManager.T("App.Title");
+            notifyIcon.Text = LanguageManager.T("App.NotifyIconText");
+            notifyIcon.BalloonTipText = LanguageManager.T("App.NotifyBalloonText");
+
+            dateiToolStripMenuItem.Text = LanguageManager.T("Main.Menu.File");
+            batchjobToolStripMenuItem.Text = LanguageManager.T("Main.Menu.BatchJob");
+            einstellungenToolStripMenuItem.Text = LanguageManager.T("Main.Menu.Settings");
+            programmBeendenToolStripMenuItem.Text = LanguageManager.T("Main.Menu.Exit");
+            hilfeToolStripMenuItem.Text = LanguageManager.T("Main.Menu.Help");
+            überToolStripMenuItem.Text = LanguageManager.T("Main.Menu.About");
+            infoLabel.Text = LanguageManager.T("Main.DropText");
+
+            UpdateModernTitleBarText();
         }
-        protected override void OnFormClosing(FormClosingEventArgs e)
+
+        private void UpdateModernTitleBarText()
         {
-            SaveMainWindowSize();
-            base.OnFormClosing(e);
-        }
-        private void SaveMainWindowSize()
-        {
-            if (WindowState != FormWindowState.Normal)
-                return;
+            Control[] controls = Controls.Find("labelModernTitle", true);
 
-            var settings = LoadCsvConfiguration();
-
-            settings["MainWindowWidth"] = Math.Max(Width, ModernTheme.MainWindowMinimumSize.Width).ToString(CultureInfo.InvariantCulture);
-            settings["MainWindowHeight"] = Math.Max(Height, ModernTheme.MainWindowMinimumSize.Height).ToString(CultureInfo.InvariantCulture);
-
-            SaveCsvConfiguration(settings);
-        }
-        private void LoadMainWindowSize()
-        {
-            var settings = LoadCsvConfiguration();
-
-            int width = Width;
-            int height = Height;
-
-            if (settings.TryGetValue("MainWindowWidth", out var widthValue))
+            if (controls.Length > 0 && controls[0] is Label labelModernTitle)
             {
-                int.TryParse(widthValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out width);
+                labelModernTitle.Text = " " + Text;
             }
-
-            if (settings.TryGetValue("MainWindowHeight", out var heightValue))
-            {
-                int.TryParse(heightValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out height);
-            }
-
-            width = Math.Max(width, ModernTheme.MainWindowMinimumSize.Width);
-            height = Math.Max(height, ModernTheme.MainWindowMinimumSize.Height);
-
-            Size = new Size(width, height);
         }
 
         private void ApplyWindowIcon()
@@ -234,18 +127,6 @@ namespace Csv2Xlsx3
                 Hide();
                 notifyIcon.Visible = true;
             }
-
-            Control panelMainWindowResizeGrip = Controls["panelMainWindowResizeGrip"];
-            if (panelMainWindowResizeGrip != null)
-            {
-                panelMainWindowResizeGrip.Location = new Point(
-                    ClientSize.Width - panelMainWindowResizeGrip.Width - ModernTheme.WindowBorderWidth,
-                    ClientSize.Height - panelMainWindowResizeGrip.Height - ModernTheme.WindowBorderWidth);
-                panelMainWindowResizeGrip.BringToFront();
-                panelMainWindowResizeGrip.Invalidate();
-            }
-
-            Invalidate();
         }
 
         private void notifyIcon_DoubleClick(object sender, EventArgs e)
@@ -254,38 +135,7 @@ namespace Csv2Xlsx3
             WindowState = FormWindowState.Normal;
             Activate();
         }
-        protected override void WndProc(ref Message m)
-        {
-            const int WM_NCHITTEST = 0x0084;
-            const int HTCLIENT = 1;
-            const int HTBOTTOMRIGHT = 17;
 
-            if (m.Msg == WM_NCHITTEST)
-            {
-                base.WndProc(ref m);
-
-                if ((int)m.Result == HTCLIENT)
-                {
-                    Point clientPoint = PointToClient(new Point(
-                        unchecked((short)(long)m.LParam),
-                        unchecked((short)((long)m.LParam >> 16))));
-
-                    if (ModernTheme.IsInMainWindowResizeGripArea(ClientSize, clientPoint))
-                    {
-                        m.Result = (IntPtr)HTBOTTOMRIGHT;
-                        return;
-                    }
-                }
-
-                return;
-            }
-
-            base.WndProc(ref m);
-        }
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-        }
         private void einstellungenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (var settingsForm = new SettingsForm())
@@ -295,6 +145,8 @@ namespace Csv2Xlsx3
 
                 if (settingsForm.ShowDialog(this) == DialogResult.OK)
                 {
+                    LanguageManager.Reload();
+                    ApplyLanguage();
                     ApplySettings();
                 }
             }
@@ -356,8 +208,8 @@ namespace Csv2Xlsx3
 
                     using (var saveDlg = new SaveFileDialog())
                     {
-                        saveDlg.Filter = "Excel Workbook|*.xlsx";
-                        saveDlg.Title = "Speichern unter";
+                        saveDlg.Filter = LanguageManager.T("Dialog.ExcelWorkbookFilter");
+                        saveDlg.Title = LanguageManager.T("Dialog.SaveAsTitle");
                         saveDlg.FileName = Path.GetFileNameWithoutExtension(file) + ".xlsx";
 
                         if (saveDlg.ShowDialog(this) == DialogResult.OK)
@@ -370,8 +222,8 @@ namespace Csv2Xlsx3
 
                             ModernTheme.ShowMessage(
                                 this,
-                                "Erfolgreich gespeichert!",
-                                "Fertig",
+                                LanguageManager.T("Message.SaveSuccess"),
+                                LanguageManager.T("Message.DoneCaption"),
                                 MessageBoxIcon.Information);
                         }
                     }
@@ -381,8 +233,8 @@ namespace Csv2Xlsx3
             {
                 ModernTheme.ShowMessage(
                     this,
-                    "Fehler: " + ex.Message,
-                    "Fehler",
+                    LanguageManager.T("Message.GenericError", ex.Message),
+                    LanguageManager.T("Message.ErrorCaption"),
                     MessageBoxIcon.Error);
             }
         }
@@ -391,8 +243,8 @@ namespace Csv2Xlsx3
         {
             using (var openDlg = new OpenFileDialog())
             {
-                openDlg.Title = "Mehrere CSV-Dateien wählen";
-                openDlg.Filter = "CSV-Dateien (*.csv)|*.csv";
+                openDlg.Title = LanguageManager.T("Dialog.CsvFilesTitle");
+                openDlg.Filter = LanguageManager.T("Dialog.CsvFilesFilter");
                 openDlg.Multiselect = true;
 
                 if (openDlg.ShowDialog(this) != DialogResult.OK || openDlg.FileNames.Length == 0)
@@ -449,8 +301,8 @@ namespace Csv2Xlsx3
                             {
                                 ModernTheme.ShowMessage(
                                     this,
-                                    "Keine gültigen Spalten zur Auswahl!",
-                                    "Fehler",
+                                    LanguageManager.T("Message.InvalidColumns"),
+                                    LanguageManager.T("Message.ErrorCaption"),
                                     MessageBoxIcon.Error);
                                 continue;
                             }
@@ -474,8 +326,8 @@ namespace Csv2Xlsx3
                 {
                     ModernTheme.ShowMessage(
                         this,
-                        "Alle Dateien wurden verarbeitet.",
-                        "Batchjob beendet",
+                        LanguageManager.T("Message.BatchDone"),
+                        LanguageManager.T("Message.BatchDoneCaption"),
                         MessageBoxIcon.Information);
                 }
             }
@@ -502,6 +354,20 @@ namespace Csv2Xlsx3
 
             using (var reader = new StreamReader(path))
             using (var csv = new CsvReader(reader, CreateCsvConfiguration(path, allowUserPrompt)))
+            using (var dr = new CsvDataReader(csv))
+            {
+                dt.Load(dr);
+            }
+
+            return dt;
+        }
+
+        private static DataTable LoadCsvIntoDataTableSilent(string path)
+        {
+            var dt = new DataTable();
+
+            using (var reader = new StreamReader(path))
+            using (var csv = new CsvReader(reader, CreateCsvConfigurationSilent(path)))
             using (var dr = new CsvDataReader(csv))
             {
                 dt.Load(dr);
@@ -553,6 +419,18 @@ namespace Csv2Xlsx3
             };
         }
 
+        private static CsvConfiguration CreateCsvConfigurationSilent(string path)
+        {
+            return new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                Delimiter = DetectCsvDelimiterSilent(path),
+                BadDataFound = null,
+                MissingFieldFound = null,
+                HeaderValidated = null,
+                IgnoreBlankLines = true
+            };
+        }
+
         private string DetectCsvDelimiter(string path, bool allowUserPrompt)
         {
             var configuredDelimiter = GetConfiguredCsvDelimiter();
@@ -562,6 +440,16 @@ namespace Csv2Xlsx3
 
             if (allowUserPrompt)
                 return PromptForCsvDelimiter(configuredDelimiter);
+
+            return configuredDelimiter;
+        }
+
+        private static string DetectCsvDelimiterSilent(string path)
+        {
+            var configuredDelimiter = GetConfiguredCsvDelimiter();
+
+            if (TryDetectCsvDelimiter(path, configuredDelimiter, out var detectedDelimiter))
+                return detectedDelimiter;
 
             return configuredDelimiter;
         }
@@ -704,14 +592,7 @@ namespace Csv2Xlsx3
 
             return ",";
         }
-        private static void SaveCsvConfiguration(Dictionary<string, string> settings)
-        {
-            string configFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CSVtoXLSX.cfg");
 
-            File.WriteAllLines(
-                configFile,
-                settings.Select(setting => setting.Key + "=" + setting.Value));
-        }
         private static Dictionary<string, string> LoadCsvConfiguration()
         {
             var settings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -742,7 +623,7 @@ namespace Csv2Xlsx3
             using (var buttonOk = new Button())
             using (var buttonCancel = new Button())
             {
-                form.Text = "CSV-Trennzeichen";
+                form.Text = LanguageManager.T("CsvDelimiter.Title");
                 form.StartPosition = FormStartPosition.CenterParent;
                 form.MinimizeBox = false;
                 form.MaximizeBox = false;
@@ -754,7 +635,7 @@ namespace Csv2Xlsx3
                 label.Top = 20;
                 label.Width = 350;
                 label.Height = 52;
-                label.Text = "Das Trennzeichen konnte nicht eindeutig erkannt werden. Bitte wählen Sie das verwendete CSV-Trennzeichen.";
+                label.Text = LanguageManager.T("CsvDelimiter.Message");
                 label.TextAlign = ContentAlignment.MiddleLeft;
 
                 comboBox.Left = 20;
@@ -763,10 +644,10 @@ namespace Csv2Xlsx3
                 comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
                 comboBox.DisplayMember = "Value";
                 comboBox.ValueMember = "Key";
-                comboBox.Items.Add(new KeyValuePair<string, string>(",", "Komma (,)"));
-                comboBox.Items.Add(new KeyValuePair<string, string>(";", "Semikolon (;)"));
-                comboBox.Items.Add(new KeyValuePair<string, string>("\t", @"Tabulator (\t)"));
-                comboBox.Items.Add(new KeyValuePair<string, string>("|", "Pipe (|)"));
+                comboBox.Items.Add(new KeyValuePair<string, string>(",", LanguageManager.T("CsvDelimiter.Comma")));
+                comboBox.Items.Add(new KeyValuePair<string, string>(";", LanguageManager.T("CsvDelimiter.Semicolon")));
+                comboBox.Items.Add(new KeyValuePair<string, string>("\t", LanguageManager.T("CsvDelimiter.Tab")));
+                comboBox.Items.Add(new KeyValuePair<string, string>("|", LanguageManager.T("CsvDelimiter.Pipe")));
 
                 for (int i = 0; i < comboBox.Items.Count; i++)
                 {
@@ -781,14 +662,14 @@ namespace Csv2Xlsx3
                 if (comboBox.SelectedIndex < 0)
                     comboBox.SelectedIndex = 0;
 
-                buttonOk.Text = "OK";
+                buttonOk.Text = LanguageManager.T("Button.OK");
                 buttonOk.Left = 195;
                 buttonOk.Top = 122;
                 buttonOk.Width = 75;
                 buttonOk.Height = 30;
                 buttonOk.DialogResult = DialogResult.OK;
 
-                buttonCancel.Text = "Abbrechen";
+                buttonCancel.Text = LanguageManager.T("Button.Cancel");
                 buttonCancel.Left = 280;
                 buttonCancel.Top = 122;
                 buttonCancel.Width = 90;
@@ -841,8 +722,8 @@ namespace Csv2Xlsx3
 
                     ModernTheme.ShowMessage(
                         this,
-                        "Datei wurde erfolgreich konvertiert:\n" + xlsxPath,
-                        "Fertig",
+                        LanguageManager.T("Message.ConvertSuccess", xlsxPath),
+                        LanguageManager.T("Message.DoneCaption"),
                         MessageBoxIcon.Information);
                 }
             }
@@ -850,8 +731,8 @@ namespace Csv2Xlsx3
             {
                 ModernTheme.ShowMessage(
                     this,
-                    "Fehler beim Konvertieren:\n" + ex.Message,
-                    "Fehler",
+                    LanguageManager.T("Message.ConvertError", ex.Message),
+                    LanguageManager.T("Message.ErrorCaption"),
                     MessageBoxIcon.Error);
             }
         }

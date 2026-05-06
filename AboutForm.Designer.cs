@@ -24,6 +24,9 @@ namespace Csv2Xlsx3
             if (disposing && btnKoFi != null && btnKoFi.Image != null)
                 btnKoFi.Image.Dispose();
 
+            if (disposing && btnKoFi != null && btnKoFi.BackgroundImage != null)
+                btnKoFi.BackgroundImage.Dispose();
+
             base.Dispose(disposing);
         }
 
@@ -43,9 +46,9 @@ namespace Csv2Xlsx3
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(20, 26);
+            this.pictureBox1.Location = new System.Drawing.Point(28, 60);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(86, 86);
+            this.pictureBox1.Size = new System.Drawing.Size(96, 96);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
@@ -53,16 +56,16 @@ namespace Csv2Xlsx3
             // labelTitle
             // 
             this.labelTitle.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
-            this.labelTitle.Location = new System.Drawing.Point(131, 27);
+            this.labelTitle.Location = new System.Drawing.Point(150, 62);
             this.labelTitle.Name = "labelTitle";
-            this.labelTitle.Size = new System.Drawing.Size(320, 21);
+            this.labelTitle.Size = new System.Drawing.Size(320, 20);
             this.labelTitle.TabIndex = 1;
             this.labelTitle.Text = "CSV2XLSX";
             this.labelTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // labelCopyright
             // 
-            this.labelCopyright.Location = new System.Drawing.Point(131, 57);
+            this.labelCopyright.Location = new System.Drawing.Point(150, 92);
             this.labelCopyright.Name = "labelCopyright";
             this.labelCopyright.Size = new System.Drawing.Size(320, 20);
             this.labelCopyright.TabIndex = 2;
@@ -71,67 +74,60 @@ namespace Csv2Xlsx3
             // 
             // labelVersion
             // 
-            this.labelVersion.Location = new System.Drawing.Point(131, 81);
+            this.labelVersion.Location = new System.Drawing.Point(150, 122);
             this.labelVersion.Name = "labelVersion";
             this.labelVersion.Size = new System.Drawing.Size(320, 20);
             this.labelVersion.TabIndex = 3;
-            this.labelVersion.Text = "Version: 0.0.1";
+            this.labelVersion.Text = "Version: 0.0.0";
             this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // labelUpdateStatus
             // 
-            this.labelUpdateStatus.Location = new System.Drawing.Point(131, 105);
+            this.labelUpdateStatus.Location = new System.Drawing.Point(150, 152);
             this.labelUpdateStatus.Name = "labelUpdateStatus";
             this.labelUpdateStatus.Size = new System.Drawing.Size(320, 20);
             this.labelUpdateStatus.TabIndex = 4;
-            this.labelUpdateStatus.Text = "Checking for updates...";
+            this.labelUpdateStatus.Text = "No new updates";
             this.labelUpdateStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // linkLabelGithub
             // 
-            this.linkLabelGithub.Location = new System.Drawing.Point(131, 129);
+            this.linkLabelGithub.Location = new System.Drawing.Point(150, 182);
             this.linkLabelGithub.Name = "linkLabelGithub";
             this.linkLabelGithub.Size = new System.Drawing.Size(320, 20);
             this.linkLabelGithub.TabIndex = 5;
             this.linkLabelGithub.TabStop = true;
-            this.linkLabelGithub.Text = "https://github.com/UncleRiot/CSV2XLSX_v3";
+            this.linkLabelGithub.Text = "https://github.com/UncleRiot/Csv2Xlsx3";
             this.linkLabelGithub.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.linkLabelGithub.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelGithub_LinkClicked);
             // 
             // labelInfo
             // 
-            this.labelInfo.Location = new System.Drawing.Point(20, 175);
+            this.labelInfo.Location = new System.Drawing.Point(28, 210);
             this.labelInfo.Name = "labelInfo";
-            this.labelInfo.Size = new System.Drawing.Size(430, 39);
+            this.labelInfo.Size = new System.Drawing.Size(444, 42);
             this.labelInfo.TabIndex = 6;
-            this.labelInfo.Text = "CSV2XLSX is free to use.\r\nIf this tool saves you time, you can support development here:";
+            this.labelInfo.Text = "CSV2XLSX is free to use.\nIf this tool saves you time, you can support development here:";
             this.labelInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // btnKoFi
             // 
-            this.btnKoFi.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnKoFi.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.btnKoFi.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnKoFi.Location = new System.Drawing.Point(20, 221);
+            this.btnKoFi.Location = new System.Drawing.Point(28, 256);
             this.btnKoFi.Name = "btnKoFi";
-            this.btnKoFi.Padding = new System.Windows.Forms.Padding(12, 0, 0, 0);
-            this.btnKoFi.Size = new System.Drawing.Size(176, 42);
+            this.btnKoFi.Size = new System.Drawing.Size(180, 42);
             this.btnKoFi.TabIndex = 7;
-            this.btnKoFi.Text = "   Buy me a coffee";
-            this.btnKoFi.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.btnKoFi.UseVisualStyleBackColor = false;
+            this.btnKoFi.UseVisualStyleBackColor = true;
             this.btnKoFi.Click += new System.EventHandler(this.btnKoFi_Click);
             this.btnKoFi.Paint += new System.Windows.Forms.PaintEventHandler(this.btnKoFi_Paint);
             // 
             // btnOk
             // 
-            this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Location = new System.Drawing.Point(385, 232);
+            this.btnOk.Location = new System.Drawing.Point(397, 286);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 30);
             this.btnOk.TabIndex = 8;
             this.btnOk.Text = "OK";
-            this.btnOk.UseVisualStyleBackColor = false;
+            this.btnOk.UseVisualStyleBackColor = true;
             this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
             // 
             // AboutForm
@@ -139,16 +135,16 @@ namespace Csv2Xlsx3
             this.AcceptButton = this.btnOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(470, 282);
-            this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.labelTitle);
-            this.Controls.Add(this.labelCopyright);
-            this.Controls.Add(this.labelVersion);
-            this.Controls.Add(this.labelUpdateStatus);
-            this.Controls.Add(this.linkLabelGithub);
-            this.Controls.Add(this.labelInfo);
-            this.Controls.Add(this.btnKoFi);
+            this.ClientSize = new System.Drawing.Size(500, 340);
             this.Controls.Add(this.btnOk);
+            this.Controls.Add(this.btnKoFi);
+            this.Controls.Add(this.labelInfo);
+            this.Controls.Add(this.linkLabelGithub);
+            this.Controls.Add(this.labelUpdateStatus);
+            this.Controls.Add(this.labelVersion);
+            this.Controls.Add(this.labelCopyright);
+            this.Controls.Add(this.labelTitle);
+            this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;

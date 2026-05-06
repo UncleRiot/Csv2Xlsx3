@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Microsoft.Win32;
@@ -15,11 +16,14 @@ namespace Csv2Xlsx3
         public SettingsForm()
         {
             InitializeComponent();
+
             _configFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CSVtoXLSX.cfg");
+
+            ApplyLanguage();
+            LoadLanguageOptions();
             LoadSettings();
 
-            string displayText = "Einstellungen werden gespeichert unter:\n" + _configFile;
-            labelConfigPath.Text = displayText;
+            labelConfigPath.Text = LanguageManager.T("Settings.ConfigPathText", _configFile);
 
             _toolTip = new ToolTip();
             _toolTip.AutoPopDelay = 10000;
@@ -29,6 +33,41 @@ namespace Csv2Xlsx3
 
             _toolTip.SetToolTip(labelConfigPath, WrapText(_configFile, 80));
             ModernFormStyler.Apply(this);
+        }
+
+        private void ApplyLanguage()
+        {
+            Text = LanguageManager.T("Settings.Title");
+            checkBoxSystray.Text = LanguageManager.T("Settings.Systray");
+            checkBoxShell.Text = LanguageManager.T("Settings.Shell");
+            checkBoxOnTop.Text = LanguageManager.T("Settings.AlwaysOnTop");
+            labelShellInfo.Text = LanguageManager.T("Settings.ShellInfo");
+            labelCsvDelimiter.Text = LanguageManager.T("Settings.CsvDelimiter");
+            labelDelimiterHint.Text = LanguageManager.T("Settings.DelimiterHint");
+            labelLanguage.Text = LanguageManager.T("Settings.Language");
+            labelConfigPath.Text = LanguageManager.T("Settings.ConfigPathRuntime");
+            buttonOk.Text = LanguageManager.T("Button.OK");
+            buttonCancel.Text = LanguageManager.T("Button.Cancel");
+        }
+
+        private void LoadLanguageOptions()
+        {
+            comboBoxLanguage.Items.Clear();
+
+            foreach (var languageOption in LanguageManager.GetAvailableLanguages())
+            {
+                comboBoxLanguage.Items.Add(languageOption);
+
+                if (string.Equals(languageOption.Code, LanguageManager.CurrentLanguageCode, StringComparison.OrdinalIgnoreCase))
+                {
+                    comboBoxLanguage.SelectedItem = languageOption;
+                }
+            }
+
+            if (comboBoxLanguage.SelectedIndex < 0 && comboBoxLanguage.Items.Count > 0)
+            {
+                comboBoxLanguage.SelectedIndex = 0;
+            }
         }
 
         private string WrapText(string text, int maxLineLength)
@@ -94,14 +133,21 @@ namespace Csv2Xlsx3
 
         private void SaveSettings()
         {
-            var lines = new[]
-            {
-                "AlwaysOnTop=" + checkBoxOnTop.Checked.ToString().ToLower(),
-                "Systray=" + checkBoxSystray.Checked.ToString().ToLower(),
-                "CsvDelimiter=" + NormalizeDelimiter(textBoxCsvDelimiter.Text)
-            };
+            var settings = ReadSettings();
 
-            File.WriteAllLines(_configFile, lines);
+            settings["AlwaysOnTop"] = checkBoxOnTop.Checked.ToString().ToLower();
+            settings["Systray"] = checkBoxSystray.Checked.ToString().ToLower();
+            settings["CsvDelimiter"] = NormalizeDelimiter(textBoxCsvDelimiter.Text);
+
+            if (comboBoxLanguage.SelectedItem is LanguageOption selectedLanguage)
+            {
+                settings["Language"] = selectedLanguage.Code;
+                LanguageManager.SetCurrentLanguage(selectedLanguage.Code);
+            }
+
+            File.WriteAllLines(
+                _configFile,
+                settings.Select(setting => setting.Key + "=" + setting.Value));
         }
 
         private static string NormalizeDelimiter(string value)
@@ -132,7 +178,7 @@ namespace Csv2Xlsx3
                 if (key == null)
                     return;
 
-                key.SetValue(string.Empty, "Mit CSVtoXLSX konvertieren");
+                key.SetValue(string.Empty, "Convert with CSV2XLSX");
 
                 using (var commandKey = key.CreateSubKey("command"))
                 {
