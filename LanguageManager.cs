@@ -360,7 +360,6 @@ namespace Csv2Xlsx3
 
             language["About.Title"] = "About";
             language["About.ProductName"] = "CSV2XLSX";
-            language["About.Copyright"] = "(c) Daniel Capilla";
             language["About.Version"] = "Version: {0}";
             language["About.NoUpdates"] = "No new updates";
             language["About.UpdateAvailable"] = "Update available: {0}";
@@ -429,7 +428,6 @@ namespace Csv2Xlsx3
 
             language["About.Title"] = "About";
             language["About.ProductName"] = "CSV2XLSX";
-            language["About.Copyright"] = "(c) Daniel Capilla";
             language["About.Version"] = "Version: {0}";
             language["About.NoUpdates"] = "Keine neuen Updates";
             language["About.UpdateAvailable"] = "Update verfügbar: {0}";

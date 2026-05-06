@@ -37,7 +37,7 @@ namespace Csv2Xlsx3
         {
             Text = LanguageManager.T("About.Title");
             labelTitle.Text = LanguageManager.T("About.ProductName");
-            labelCopyright.Text = LanguageManager.T("About.Copyright");
+            labelCopyright.Text = "(c) Daniel Capilla";
             labelVersion.Text = LanguageManager.T("About.Version", GetCurrentVersion());
             labelUpdateStatus.Text = LanguageManager.T("About.NoUpdates");
             labelInfo.Text = LanguageManager.T("About.Info");
