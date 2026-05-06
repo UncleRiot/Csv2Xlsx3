@@ -2,7 +2,7 @@
 // Datei:      MainForm.cs
 // Autor:      Daniel Capilla
 // Projekt:    CSVtoXLSX_v3
-// Version:    1.0 (Stand: 2026-05-05)
+// Version:    1.0.1 (Stand: 2026-05-06)
 // ---------------------------------------------------------------------------
 // Beschreibung:
 // Hauptfenster für die Auswahl und Konvertierung von CSV-Dateien zu XLSX.
@@ -14,7 +14,6 @@
 //   - Shell-Kontextmenü (Rechtsklick auf .csv in Windows-Explorer)
 //   - Einstellungsdatei: CSVtoXLSX.cfg im Programmverzeichnis
 //   - Registry: Shell-Kontextmenü wird (de)aktiviert unter HKCU\Software\Classes\SystemFileAssociations\.csv\shell\CSVtoXLSX
-//   - Timebomb-Routine (Testzeitraum)
 // ---------------------------------------------------------------------------
 
 using System;

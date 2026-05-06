@@ -13,8 +13,8 @@ namespace Csv2Xlsx3
 {
     public partial class AboutForm : Form
     {
-        private const string GithubRepositoryUrl = "https://github.com/UncleRiot/CSV2XLSX_v3";
-        private const string GithubLatestReleaseApiUrl = "https://api.github.com/repos/UncleRiot/CSV2XLSX_v3/releases/latest";
+        private const string GithubRepositoryUrl = "https://github.com/UncleRiot/Csv2Xlsx3";
+        private const string GithubLatestReleaseApiUrl = "https://api.github.com/repos/UncleRiot/Csv2Xlsx3/releases/latest";
         private const string KoFiUrl = "https://ko-fi.com/uncleriot";
 
         public AboutForm()
@@ -347,6 +347,9 @@ namespace Csv2Xlsx3
                         {
                             labelUpdateStatus.Text = "No new updates";
                             labelUpdateStatus.ForeColor = ModernTheme.TextColor;
+                            labelUpdateStatus.Font = ModernTheme.DefaultFont;
+                            labelUpdateStatus.Cursor = Cursors.Default;
+                            labelUpdateStatus.Click -= labelUpdateStatus_Click;
                             return;
                         }
 
@@ -357,6 +360,9 @@ namespace Csv2Xlsx3
                         {
                             labelUpdateStatus.Text = "No new updates";
                             labelUpdateStatus.ForeColor = ModernTheme.TextColor;
+                            labelUpdateStatus.Font = ModernTheme.DefaultFont;
+                            labelUpdateStatus.Cursor = Cursors.Default;
+                            labelUpdateStatus.Click -= labelUpdateStatus_Click;
                             return;
                         }
 
@@ -364,11 +370,18 @@ namespace Csv2Xlsx3
                         {
                             labelUpdateStatus.Text = "Update available: " + latestVersionText;
                             labelUpdateStatus.ForeColor = ModernTheme.AccentColor;
+                            labelUpdateStatus.Font = new Font(labelUpdateStatus.Font, FontStyle.Underline);
+                            labelUpdateStatus.Cursor = Cursors.Hand;
+                            labelUpdateStatus.Click -= labelUpdateStatus_Click;
+                            labelUpdateStatus.Click += labelUpdateStatus_Click;
                         }
                         else
                         {
                             labelUpdateStatus.Text = "No new updates";
                             labelUpdateStatus.ForeColor = ModernTheme.TextColor;
+                            labelUpdateStatus.Font = ModernTheme.DefaultFont;
+                            labelUpdateStatus.Cursor = Cursors.Default;
+                            labelUpdateStatus.Click -= labelUpdateStatus_Click;
                         }
                     }
                 }
@@ -377,9 +390,15 @@ namespace Csv2Xlsx3
             {
                 labelUpdateStatus.Text = "No new updates";
                 labelUpdateStatus.ForeColor = ModernTheme.TextColor;
+                labelUpdateStatus.Font = ModernTheme.DefaultFont;
+                labelUpdateStatus.Cursor = Cursors.Default;
+                labelUpdateStatus.Click -= labelUpdateStatus_Click;
             }
         }
-
+        private void labelUpdateStatus_Click(object sender, EventArgs e)
+        {
+            OpenUrl(GithubRepositoryUrl + "/releases/latest");
+        }
         private void OpenUrl(string url)
         {
             Process.Start(new ProcessStartInfo
