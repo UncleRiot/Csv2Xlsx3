@@ -220,11 +220,10 @@ namespace Csv2Xlsx3
                                 wb.SaveAs(saveDlg.FileName);
                             }
 
-                            ModernTheme.ShowMessage(
-                                this,
-                                LanguageManager.T("Message.SaveSuccess"),
-                                LanguageManager.T("Message.DoneCaption"),
-                                MessageBoxIcon.Information);
+                            notifyIcon.BalloonTipTitle = LanguageManager.T("Message.DoneCaption");
+                            notifyIcon.BalloonTipText = LanguageManager.T("Message.SaveSuccess");
+                            notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
+                            notifyIcon.ShowBalloonTip(3000);
                         }
                     }
                 }
@@ -720,11 +719,10 @@ namespace Csv2Xlsx3
                         wb.SaveAs(xlsxPath);
                     }
 
-                    ModernTheme.ShowMessage(
-                        this,
-                        LanguageManager.T("Message.ConvertSuccess", xlsxPath),
-                        LanguageManager.T("Message.DoneCaption"),
-                        MessageBoxIcon.Information);
+                    notifyIcon.BalloonTipTitle = LanguageManager.T("Message.DoneCaption");
+                    notifyIcon.BalloonTipText = LanguageManager.T("Message.ConvertSuccess", xlsxPath);
+                    notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
+                    notifyIcon.ShowBalloonTip(3000);
                 }
             }
             catch (Exception ex)
