@@ -350,12 +350,14 @@ namespace Csv2Xlsx3
             language["Settings.Title"] = "Settings";
             language["Settings.Systray"] = "Minimize application to system tray";
             language["Settings.Shell"] = "Enable shell context menu for CSV files";
+            language["Settings.ShellContextColumnSelection"] = "Column selection for context menu usage";
             language["Settings.AlwaysOnTop"] = "Always on top";
             language["Settings.ShellInfo"] = "The shell context menu allows conversion directly by right-clicking CSV files in Windows Explorer.";
             language["Settings.CsvDelimiter"] = "CSV delimiter";
             language["Settings.DelimiterHint"] = "\",\" and \";\" are detected automatically";
             language["Settings.ConfigPathRuntime"] = "Path is set at runtime";
             language["Settings.ConfigPathText"] = "Settings are saved under:\\n{0}";
+            language["Settings.ShellExeInfo"] = "Shell context menu points to:";
             language["Settings.Language"] = "Language";
 
             language["About.Title"] = "About";
@@ -418,12 +420,14 @@ namespace Csv2Xlsx3
             language["Settings.Title"] = "Einstellungen";
             language["Settings.Systray"] = "Programm bei Minimierung in den Systray";
             language["Settings.Shell"] = "Shell-Kontextmenü für CSV-Dateien aktivieren";
+            language["Settings.ShellContextColumnSelection"] = "Spaltenauswahl bei Kontextmenü-Nutzung";
             language["Settings.AlwaysOnTop"] = "Programm immer im Vordergrund";
             language["Settings.ShellInfo"] = "Das Shell-Kontextmenü ermöglicht die Konvertierung direkt per Rechtsklick auf CSV-Dateien im Windows-Explorer.";
             language["Settings.CsvDelimiter"] = "CSV-Trennzeichen";
             language["Settings.DelimiterHint"] = "\",\" und \";\" werden automatisch erkannt";
             language["Settings.ConfigPathRuntime"] = "Pfad wird zur Laufzeit gesetzt";
             language["Settings.ConfigPathText"] = "Einstellungen werden gespeichert unter:\\n{0}";
+            language["Settings.ShellExeInfo"] = "Shell-Kontextmenü verweist auf:";
             language["Settings.Language"] = "Sprache";
 
             language["About.Title"] = "About";

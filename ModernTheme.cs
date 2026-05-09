@@ -19,6 +19,7 @@ namespace Csv2Xlsx3
         public static readonly Color AccentHoverColor = Color.FromArgb(143, 212, 255);
         public static readonly Color TextColor = Color.FromArgb(199, 213, 224);
         public static readonly Color DarkTextColor = Color.FromArgb(23, 26, 33);
+        public static readonly Color DisabledTextColor = Color.FromArgb(120, 130, 138);
         public static readonly Color WindowBorderColor = Color.FromArgb(102, 192, 244);
         public static readonly Color CloseButtonHoverColor = Color.FromArgb(196, 43, 28);
 
@@ -160,9 +161,14 @@ namespace Csv2Xlsx3
         public static void ApplyCheckBoxStyle(CheckBox checkBox)
         {
             checkBox.BackColor = WindowBackColor;
-            checkBox.ForeColor = TextColor;
+            checkBox.ForeColor = checkBox.Enabled ? TextColor : DisabledTextColor;
             checkBox.Font = DefaultFont;
             checkBox.UseVisualStyleBackColor = false;
+
+            checkBox.EnabledChanged += (sender, e) =>
+            {
+                checkBox.ForeColor = checkBox.Enabled ? TextColor : DisabledTextColor;
+            };
         }
 
         public static void ApplyLabelStyle(Label label)

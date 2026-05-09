@@ -21,6 +21,15 @@ namespace Csv2Xlsx3
             try
             {
                 var dt = LoadCsvIntoDataTableSilent(csvFilePath);
+
+                if (GetConfiguredShellContextColumnSelection())
+                {
+                    dt = SelectColumnsForSilentContextMenu(dt);
+
+                    if (dt == null)
+                        return;
+                }
+
                 string xlsxPath = Path.ChangeExtension(csvFilePath, ".xlsx");
 
                 using (var wb = new XLWorkbook())
@@ -32,6 +41,34 @@ namespace Csv2Xlsx3
             catch
             {
             }
+        }
+        private static DataTable SelectColumnsForSilentContextMenu(DataTable dt)
+        {
+            var columnNames = dt.Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToList();
+
+            using (var colForm = new ColumnSelectionForm(columnNames, dt))
+            {
+                colForm.StartPosition = FormStartPosition.CenterScreen;
+
+                if (colForm.ShowDialog() != DialogResult.OK || colForm.SelectedColumns.Count == 0)
+                    return null;
+
+                var selectedCols = colForm.SelectedColumns
+                    .Where(col => !string.IsNullOrWhiteSpace(col) && dt.Columns.Contains(col))
+                    .ToArray();
+
+                if (selectedCols.Length == 0)
+                    return null;
+
+                return dt.DefaultView.ToTable(false, selectedCols);
+            }
+        }
+        private static bool GetConfiguredShellContextColumnSelection()
+        {
+            var settings = LoadCsvConfiguration();
+
+            return settings.TryGetValue("ShellContextColumnSelection", out var value) &&
+                   value.Trim().Equals("true", StringComparison.OrdinalIgnoreCase);
         }
 
         public MainForm() : this(Array.Empty<string>())
@@ -191,51 +228,54 @@ namespace Csv2Xlsx3
         {
             var file = ((string[])e.Data.GetData(DataFormats.FileDrop)).First();
 
-            try
+            BeginInvoke(new Action(() =>
             {
-                var dt = LoadCsvIntoDataTable(file);
-                var columnNames = dt.Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToList();
-
-                using (var colForm = new ColumnSelectionForm(columnNames, dt))
+                try
                 {
-                    colForm.StartPosition = FormStartPosition.CenterParent;
-                    colForm.TopMost = TopMost;
+                    var dt = LoadCsvIntoDataTable(file);
+                    var columnNames = dt.Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToList();
 
-                    if (colForm.ShowDialog(this) != DialogResult.OK || colForm.SelectedColumns.Count == 0)
-                        return;
-
-                    var dtFiltered = dt.DefaultView.ToTable(false, colForm.SelectedColumns.ToArray());
-
-                    using (var saveDlg = new SaveFileDialog())
+                    using (var colForm = new ColumnSelectionForm(columnNames, dt))
                     {
-                        saveDlg.Filter = LanguageManager.T("Dialog.ExcelWorkbookFilter");
-                        saveDlg.Title = LanguageManager.T("Dialog.SaveAsTitle");
-                        saveDlg.FileName = Path.GetFileNameWithoutExtension(file) + ".xlsx";
+                        colForm.StartPosition = FormStartPosition.CenterParent;
+                        colForm.TopMost = TopMost;
 
-                        if (saveDlg.ShowDialog(this) == DialogResult.OK)
+                        if (colForm.ShowDialog(this) != DialogResult.OK || colForm.SelectedColumns.Count == 0)
+                            return;
+
+                        var dtFiltered = dt.DefaultView.ToTable(false, colForm.SelectedColumns.ToArray());
+
+                        using (var saveDlg = new SaveFileDialog())
                         {
-                            using (var wb = new XLWorkbook())
-                            {
-                                wb.Worksheets.Add(dtFiltered, "Daten");
-                                wb.SaveAs(saveDlg.FileName);
-                            }
+                            saveDlg.Filter = LanguageManager.T("Dialog.ExcelWorkbookFilter");
+                            saveDlg.Title = LanguageManager.T("Dialog.SaveAsTitle");
+                            saveDlg.FileName = Path.GetFileNameWithoutExtension(file) + ".xlsx";
 
-                            notifyIcon.BalloonTipTitle = LanguageManager.T("Message.DoneCaption");
-                            notifyIcon.BalloonTipText = LanguageManager.T("Message.SaveSuccess");
-                            notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
-                            notifyIcon.ShowBalloonTip(3000);
+                            if (saveDlg.ShowDialog(this) == DialogResult.OK)
+                            {
+                                using (var wb = new XLWorkbook())
+                                {
+                                    wb.Worksheets.Add(dtFiltered, "Daten");
+                                    wb.SaveAs(saveDlg.FileName);
+                                }
+
+                                notifyIcon.BalloonTipTitle = LanguageManager.T("Message.DoneCaption");
+                                notifyIcon.BalloonTipText = LanguageManager.T("Message.SaveSuccess");
+                                notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
+                                notifyIcon.ShowBalloonTip(3000);
+                            }
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                ModernTheme.ShowMessage(
-                    this,
-                    LanguageManager.T("Message.GenericError", ex.Message),
-                    LanguageManager.T("Message.ErrorCaption"),
-                    MessageBoxIcon.Error);
-            }
+                catch (Exception ex)
+                {
+                    ModernTheme.ShowMessage(
+                        this,
+                        LanguageManager.T("Message.GenericError", ex.Message),
+                        LanguageManager.T("Message.ErrorCaption"),
+                        MessageBoxIcon.Error);
+                }
+            }));
         }
 
         private void batchjobToolStripMenuItem_Click(object sender, EventArgs e)

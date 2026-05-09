@@ -4,16 +4,16 @@
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net8.0-windows</TargetFramework>
 		<UseWindowsForms>true</UseWindowsForms>
-		<SupportedOSPlatformVersion>6.1</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
 		<Nullable>disable</Nullable>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<RootNamespace>Csv2Xlsx3</RootNamespace>
 		<AssemblyName>Csv2Xlsx3</AssemblyName>
 		<ApplicationIcon>Ressources\CSVtoXLSXnew.ico</ApplicationIcon>
-		<Version>1.0.3</Version>
-		<FileVersion>1.0.3.0</FileVersion>
-		<AssemblyVersion>1.0.3.0</AssemblyVersion>
-		<InformationalVersion>1.0.3</InformationalVersion>
+		<Version>1.1</Version>
+		<FileVersion>1.1</FileVersion>
+		<AssemblyVersion>1.1</AssemblyVersion>
+		<InformationalVersion>1.1</InformationalVersion>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<Product>Csv2Xlsx3</Product>
 		<Company>Daniel Capilla</Company>

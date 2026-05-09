@@ -24,6 +24,7 @@ namespace Csv2Xlsx3
             LoadSettings();
 
             labelConfigPath.Text = LanguageManager.T("Settings.ConfigPathText", _configFile);
+            labelShellExePath.Text = GetShellContextMenuExecutablePath();
 
             _toolTip = new ToolTip();
             _toolTip.AutoPopDelay = 10000;
@@ -32,7 +33,11 @@ namespace Csv2Xlsx3
             _toolTip.ShowAlways = true;
 
             _toolTip.SetToolTip(labelConfigPath, WrapText(_configFile, 80));
+            _toolTip.SetToolTip(labelShellExePath, WrapText(labelShellExePath.Text, 80));
+
             ModernFormStyler.Apply(this);
+
+            UpdateShellContextSettingsState();
         }
 
         private void ApplyLanguage()
@@ -40,12 +45,14 @@ namespace Csv2Xlsx3
             Text = LanguageManager.T("Settings.Title");
             checkBoxSystray.Text = LanguageManager.T("Settings.Systray");
             checkBoxShell.Text = LanguageManager.T("Settings.Shell");
+            checkBoxShellColumnSelection.Text = LanguageManager.T("Settings.ShellContextColumnSelection");
             checkBoxOnTop.Text = LanguageManager.T("Settings.AlwaysOnTop");
-            labelShellInfo.Text = LanguageManager.T("Settings.ShellInfo");
             labelCsvDelimiter.Text = LanguageManager.T("Settings.CsvDelimiter");
             labelDelimiterHint.Text = LanguageManager.T("Settings.DelimiterHint");
             labelLanguage.Text = LanguageManager.T("Settings.Language");
             labelConfigPath.Text = LanguageManager.T("Settings.ConfigPathRuntime");
+            labelShellExeInfo.Text = LanguageManager.T("Settings.ShellExeInfo");
+            labelShellExePath.Text = LanguageManager.T("Settings.ConfigPathRuntime");
             buttonOk.Text = LanguageManager.T("Button.OK");
             buttonCancel.Text = LanguageManager.T("Button.Cancel");
         }
@@ -95,6 +102,7 @@ namespace Csv2Xlsx3
             checkBoxOnTop.Checked = GetBool(settings, "AlwaysOnTop");
             checkBoxSystray.Checked = GetBool(settings, "Systray");
             checkBoxShell.Checked = IsContextMenuRegistered();
+            checkBoxShellColumnSelection.Checked = GetBool(settings, "ShellContextColumnSelection");
 
             if (settings.TryGetValue("CsvDelimiter", out var delimiter))
             {
@@ -138,6 +146,7 @@ namespace Csv2Xlsx3
             settings["AlwaysOnTop"] = checkBoxOnTop.Checked.ToString().ToLower();
             settings["Systray"] = checkBoxSystray.Checked.ToString().ToLower();
             settings["CsvDelimiter"] = NormalizeDelimiter(textBoxCsvDelimiter.Text);
+            settings["ShellContextColumnSelection"] = (checkBoxShell.Checked && checkBoxShellColumnSelection.Checked).ToString().ToLower();
 
             if (comboBoxLanguage.SelectedItem is LanguageOption selectedLanguage)
             {
@@ -178,14 +187,16 @@ namespace Csv2Xlsx3
                 if (key == null)
                     return;
 
+                string exePath = Application.ExecutablePath;
+
                 key.SetValue(string.Empty, "Convert with CSV2XLSX");
+                key.SetValue("Icon", exePath);
 
                 using (var commandKey = key.CreateSubKey("command"))
                 {
                     if (commandKey == null)
                         return;
 
-                    string exePath = Application.ExecutablePath;
                     commandKey.SetValue(string.Empty, $"\"{exePath}\" \"%1\"");
                 }
             }
@@ -200,8 +211,36 @@ namespace Csv2Xlsx3
         {
             base.OnLoad(e);
 
+            checkBoxShell.CheckedChanged += CheckBoxShell_CheckedChanged;
             buttonOk.Click += ButtonOk_Click;
             buttonCancel.Click += ButtonCancel_Click;
+        }
+        private void CheckBoxShell_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateShellContextSettingsState();
+        }
+        private void UpdateShellContextSettingsState()
+        {
+            bool shellEnabled = checkBoxShell.Checked;
+
+            checkBoxShellColumnSelection.Enabled = true;
+            checkBoxShellColumnSelection.AutoCheck = shellEnabled;
+            checkBoxShellColumnSelection.TabStop = shellEnabled;
+            checkBoxShellColumnSelection.ForeColor = shellEnabled
+                ? ModernTheme.TextColor
+                : System.Drawing.SystemColors.GrayText;
+
+            labelShellExeInfo.Visible = shellEnabled;
+            labelShellExePath.Visible = shellEnabled;
+
+            if (!shellEnabled)
+            {
+                checkBoxShellColumnSelection.Checked = false;
+            }
+        }
+        private static string GetShellContextMenuExecutablePath()
+        {
+            return Application.ExecutablePath;
         }
 
         private void ButtonOk_Click(object sender, EventArgs e)
