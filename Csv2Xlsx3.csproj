@@ -4,7 +4,7 @@
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net8.0-windows</TargetFramework>
 		<UseWindowsForms>true</UseWindowsForms>
-		<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
 		<Nullable>disable</Nullable>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<RootNamespace>Csv2Xlsx3</RootNamespace>
